@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1440, height=1080" />
+<title>뉴욕 워크숍 소개 v4</title>
+<script src="vendor/gsap.min.js"></script>
+<style>
+@font-face { font-family: "A2Z"; src: url("assets/a2z-8.woff2") format("woff2"); font-weight: 800; font-display: block; }
+@font-face { font-family: "A2Z"; src: url("assets/a2z-5.woff2") format("woff2"); font-weight: 500; font-display: block; }
+@font-face { font-family: "Inter LM"; src: url("assets/inter.woff2") format("woff2"); font-weight: 100 900; }
+:root { --bg:#FBF6EE; --ink:#1F1A14; --muted:#8A7F72; --or:#FF6A1A; --or-deep:#E8590C; --or-soft:#FFE9DA; --surface:#FFFFFF; --line:#EFE4D6; --amber:#FFB547;
+  --ui:"A2Z","Inter LM",system-ui,sans-serif; --mono:ui-monospace,"SF Mono",Menlo,monospace; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:1920px; height:1080px; overflow:hidden; background:var(--bg); }
+#main { position:relative; width:1920px; height:1080px; overflow:hidden; background:var(--bg); color:var(--ink); font-family:var(--ui); -webkit-font-smoothing:antialiased; }
+.abs { position:absolute; }
+.scene { position:absolute; inset:0; opacity:0; }
+.o { color:var(--or); }
+
+#bg { position:absolute; inset:0; overflow:hidden; }
+.blob { position:absolute; border-radius:50%; filter:blur(90px); }
+#b1 { left:-200px; top:-260px; width:900px; height:900px; background:radial-gradient(closest-side, rgba(255,106,26,.30), rgba(255,106,26,0)); }
+#b2 { left:1180px; top:420px; width:1000px; height:1000px; background:radial-gradient(closest-side, rgba(255,181,71,.38), rgba(255,181,71,0)); }
+#b3 { left:640px; top:-380px; width:760px; height:760px; background:radial-gradient(closest-side, rgba(255,150,110,.22), rgba(255,150,110,0)); }
+#grid { position:absolute; inset:0; background-image:radial-gradient(rgba(120,70,20,.16) 1.4px, transparent 1.6px); background-size:36px 36px;
+  -webkit-mask-image:radial-gradient(1100px 700px at 50% 45%, #000, transparent 80%); mask-image:radial-gradient(1100px 700px at 50% 45%, #000, transparent 80%); }
+#bigword { position:absolute; left:0; top:690px; white-space:nowrap; font-weight:800; font-size:300px; line-height:300px; letter-spacing:-.02em; color:transparent; -webkit-text-stroke:2px rgba(255,106,26,.16); }
+#grain { position:absolute; inset:0; opacity:.18; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45 0 0 0 0 .3 0 0 0 0 .15 0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+
+.kick { display:inline-flex; align-items:center; gap:10px; height:48px; padding:0 22px; border-radius:999px; background:var(--or-soft); color:var(--or-deep); font-size:24px; font-weight:800; letter-spacing:.02em; }
+.hl { font-weight:800; letter-spacing:-.025em; font-size:84px; line-height:100px; }
+.hl .l { display:block; }
+.left { left:120px; top:250px; width:780px; }
+.left .kick { margin-bottom:28px; }
+.card { background:var(--surface); border:1px solid var(--line); border-radius:26px; box-shadow:0 30px 70px -34px rgba(120,70,20,.35); }
+.media { overflow:hidden; border-radius:26px; background:#000; box-shadow:0 40px 90px -36px rgba(120,70,20,.55); }
+.media video, .media img { width:100%; height:100%; object-fit:cover; display:block; }
+.ok { width:34px; height:34px; border-radius:50%; background:var(--or); display:flex; align-items:center; justify-content:center; flex:none; }
+.chip { display:inline-flex; align-items:center; gap:10px; padding:11px 18px; border-radius:16px; background:#fff; border:1px solid var(--line); font-size:26px; font-weight:800; box-shadow:0 12px 26px -18px rgba(120,70,20,.35); white-space:nowrap; }
+.chip b { color:var(--or); }
+.term { background:#1F1A14; border-radius:26px; color:#F4EDE4; box-shadow:0 40px 90px -36px rgba(60,35,10,.6); overflow:hidden; }
+.term .bar { height:62px; display:flex; align-items:center; gap:12px; padding:0 26px; border-bottom:1px solid rgba(255,255,255,.08); font-family:var(--mono); font-size:22px; color:#A89F94; }
+.term .bar i { width:14px; height:14px; border-radius:50%; background:rgba(255,255,255,.2); display:block; }
+.term .bar img { width:26px; height:26px; margin-left:10px; }
+.tline { position:absolute; left:34px; display:flex; align-items:center; gap:18px; font-size:32px; font-weight:500; }
+.tline .p { color:var(--amber); font-weight:800; }
+.tline .ok { background:var(--amber); width:32px; height:32px; }
+
+#tag { left:60px; top:46px; display:flex; align-items:center; gap:12px; font-size:24px; font-weight:800; color:var(--muted); }
+#tag i { width:12px; height:12px; border-radius:50%; background:var(--or); display:block; }
+#sub { left:160px; width:1600px; top:952px; text-align:center; font-size:36px; line-height:50px; font-weight:500; }
+#sub span { position:absolute; left:0; width:1600px; opacity:0; }
+
+/* A hook */
+#chat { left:1000px; top:150px; width:800px; padding:28px 32px; }
+#chat .t { font-size:22px; font-weight:800; color:var(--muted); }
+#chat .q { margin-top:16px; margin-left:auto; width:max-content; padding:14px 22px; border-radius:20px 20px 6px 20px; background:var(--or); color:#fff; font-size:30px; font-weight:500; }
+#chat .a { margin-top:14px; width:max-content; padding:14px 22px; border-radius:20px 20px 20px 6px; background:#F3EEE6; font-size:28px; font-weight:500; }
+#edit { left:1000px; top:430px; width:800px; height:430px; padding:26px 30px; }
+#edit .t { font-size:22px; font-weight:800; color:var(--muted); display:flex; justify-content:space-between; }
+#edit .t b { color:#D92D20; }
+#edit .row { position:absolute; left:30px; width:740px; height:52px; border-radius:10px; background:#F3EEE6; overflow:hidden; }
+#edit .clip { position:absolute; top:7px; height:38px; border-radius:8px; }
+#edit .ph { position:absolute; left:250px; top:70px; width:4px; height:330px; background:#D92D20; border-radius:2px; }
+#hookq { margin-top:40px; font-size:44px; line-height:60px; font-weight:800; color:var(--muted); }
+
+/* B duo intro */
+#s3 .top { left:0; width:1920px; top:96px; text-align:center; }
+#s3 .top .hl { margin-top:18px; font-size:72px; line-height:88px; }
+.duo-card { position:absolute; top:330px; width:600px; text-align:center; }
+#dR { left:260px; } #dH { left:1060px; }
+.duo-card .pf { width:360px; height:440px; margin:0 auto; border-radius:30px; overflow:hidden; box-shadow:0 34px 70px -30px rgba(120,70,20,.5); }
+.duo-card .pf img { width:100%; height:100%; object-fit:cover; object-position:50% 18%; }
+.duo-card .n { margin-top:22px; font-size:44px; font-weight:800; }
+.duo-card .r { margin-top:4px; font-size:26px; color:var(--or-deep); font-weight:800; }
+#route3 { left:0; width:1920px; top:200px; text-align:center; }
+#route3 .chip { font-size:26px; }
+#route3 .pl { color:var(--or); }
+
+/* C 2days */
+#s4 .hl { font-size:80px; line-height:96px; }
+#big2 { left:1000px; top:150px; width:800px; height:700px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:30px; }
+#big2 .nums { display:flex; gap:60px; align-items:flex-end; }
+#big2 .num { text-align:center; }
+#big2 .num b { display:block; font-size:200px; line-height:190px; font-weight:800; color:var(--or); letter-spacing:-.04em; }
+#big2 .num span { font-size:34px; font-weight:800; color:var(--muted); }
+#big2 .plus { display:flex; gap:18px; align-items:center; }
+#big2 .pill { padding:18px 30px; border-radius:999px; background:#1F1A14; color:#fff; font-size:36px; font-weight:800; }
+#big2 .pill.or { background:var(--or); }
+#big2 .x { font-size:44px; font-weight:800; color:var(--muted); }
+
+/* D not tool */
+#s5 .center { left:0; width:1920px; top:330px; text-align:center; }
+#strike { display:inline-block; position:relative; font-size:72px; font-weight:800; color:var(--muted); }
+#strike i { position:absolute; left:-10px; right:-10px; top:52%; height:8px; background:var(--or); border-radius:4px; transform-origin:0 50%; }
+#notool2 { margin-top:40px; font-size:96px; line-height:110px; font-weight:800; }
+
+/* E Ryan / G Hamlog profile */
+.prof .pf { position:absolute; top:150px; width:440px; height:560px; border-radius:32px; overflow:hidden; box-shadow:0 40px 80px -30px rgba(120,70,20,.5); }
+.prof .pf img { width:100%; height:100%; object-fit:cover; object-position:50% 18%; }
+.prof .nm { position:absolute; top:150px; font-size:76px; font-weight:800; letter-spacing:-.02em; }
+.prof .nm small { font-size:32px; color:var(--muted); font-weight:500; margin-left:14px; }
+.prof .role { position:absolute; top:250px; font-size:30px; font-weight:800; color:var(--or-deep); }
+.prof .chips { position:absolute; top:320px; display:flex; flex-direction:column; gap:14px; align-items:flex-start; }
+#s6 .pf { left:140px; } #s6 .nm, #s6 .role, #s6 .chips { left:660px; }
+#s8 .pf { left:140px; } #s8 .nm, #s8 .role, #s8 .chips { left:660px; }
+#poster8 { left:1420px; top:150px; width:380px; height:563px; border-radius:24px; }
+#award8 { left:1420px; top:735px; width:380px; text-align:center; }
+
+/* F Ryan outcome */
+#t7 { left:120px; top:520px; width:780px; height:360px; }
+#win { left:980px; top:110px; width:820px; height:520px; border-radius:24px; overflow:hidden; background:#fff; box-shadow:0 40px 90px -30px rgba(60,35,10,.5); }
+#win .bar { height:54px; background:#F3EEE6; display:flex; align-items:center; gap:10px; padding:0 20px; border-bottom:1px solid var(--line); }
+#win .bar i { width:13px; height:13px; border-radius:50%; background:#D9CFC2; display:block; }
+#win .url { margin-left:12px; flex:1; height:32px; border-radius:9px; background:#fff; border:1px solid var(--line); display:flex; align-items:center; padding:0 14px; font-size:19px; color:var(--muted); font-family:var(--mono); }
+#rep { position:absolute; left:0; top:54px; width:820px; }
+#rep img { width:820px; display:block; }
+.note { position:absolute; width:520px; padding:20px 24px; display:flex; align-items:center; gap:16px; background:linear-gradient(165deg, rgba(255,255,255,.96), rgba(255,248,240,.9)); border-radius:22px; box-shadow:0 14px 34px -14px rgba(120,70,20,.3); }
+.note .ic { width:58px; height:58px; border-radius:16px; display:flex; align-items:center; justify-content:center; flex:none; font-size:24px; font-weight:800; color:#fff; }
+.note .tx { font-size:22px; color:var(--muted); font-weight:800; }
+.note .tx b { display:block; margin-top:3px; font-size:28px; color:var(--ink); }
+#n1 { left:1000px; top:670px; } #n2 { left:1300px; top:780px; }
+
+/* H Hamlog outcome */
+#ph9 { left:1000px; top:90px; width:400px; height:810px; border-radius:60px; background:#1F1A14; padding:13px; box-shadow:0 40px 90px -36px rgba(60,35,10,.6); }
+#ph9 .scr { position:relative; width:374px; height:784px; border-radius:48px; overflow:hidden; background:#000; }
+#ph9 .scr video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+#ph9 .isl { position:absolute; left:137px; top:14px; width:100px; height:28px; border-radius:14px; background:#1F1A14; z-index:3; }
+#ph9 .rl { position:absolute; left:20px; bottom:30px; z-index:3; color:#fff; font-size:22px; font-weight:800; text-shadow:0 2px 8px rgba(0,0,0,.5); }
+#ph9lbl { left:1000px; top:912px; width:400px; text-align:center; font-size:22px; font-weight:800; color:var(--muted); display:none; }
+#cin1 { left:1440px; top:110px; width:400px; height:380px; }
+#cin2 { left:1440px; top:520px; width:400px; height:380px; }
+.tc { position:absolute; right:16px; bottom:14px; color:rgba(255,255,255,.9); font-family:var(--mono); font-size:18px; z-index:2; text-shadow:0 1px 4px rgba(0,0,0,.6); }
+.lbl2 { position:absolute; left:16px; top:14px; z-index:2; padding:6px 12px; border-radius:10px; background:rgba(0,0,0,.45); color:#fff; font-size:20px; font-weight:800; }
+
+/* I install */
+#zoom { left:1000px; top:130px; width:800px; padding:32px 36px 20px; }
+#zoom .zh { display:flex; align-items:center; gap:18px; }
+#zoom .zi { width:66px; height:66px; border-radius:18px; background:#2D8CFF; display:flex; align-items:center; justify-content:center; }
+#zoom .zt { font-size:34px; font-weight:800; }
+#zoom .zt small { display:block; font-size:24px; color:var(--muted); font-weight:500; margin-top:4px; }
+.zs { display:flex; align-items:center; gap:18px; height:88px; font-size:34px; font-weight:800; border-top:1px solid var(--line); }
+.zs:first-of-type { margin-top:22px; }
+.zs span { margin-left:auto; font-size:24px; color:var(--muted); font-weight:500; }
+#kakao { left:1000px; top:700px; width:800px; padding:22px 30px; display:flex; align-items:center; gap:18px; font-size:30px; font-weight:800; }
+#kakao i { width:58px; height:58px; border-radius:16px; background:#FEE500; display:flex; align-items:center; justify-content:center; font-style:normal; font-size:22px; color:#3A1D1D; }
+
+/* J venue */
+#ven { left:0; top:0; width:1920px; height:1080px; overflow:hidden; }
+#ven img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+#ven-shade { left:0; top:0; width:1920px; height:1080px; background:linear-gradient(90deg, rgba(20,14,8,.78) 0%, rgba(20,14,8,.35) 45%, rgba(20,14,8,0) 70%), linear-gradient(0deg, rgba(20,14,8,.6) 0%, rgba(20,14,8,0) 30%); }
+#door { left:1440px; top:120px; width:360px; height:420px; border-radius:22px; overflow:hidden; border:5px solid #fff; box-shadow:0 30px 60px -20px rgba(0,0,0,.6); }
+#door img { width:100%; height:100%; object-fit:cover; object-position:30% 50%; }
+#ven-t { left:120px; top:330px; width:1250px; color:#fff; }
+#ven-t .a { font-size:26px; font-weight:800; color:var(--amber); letter-spacing:.08em; }
+#ven-t .b { margin-top:14px; font-size:118px; line-height:120px; font-weight:800; letter-spacing:-.02em; }
+#ven-t .c { margin-top:22px; font-size:32px; font-weight:500; opacity:.92; white-space:nowrap; }
+
+/* K the 2 */
+#two { left:0; top:0; width:1920px; height:1080px; }
+#two .digit { position:absolute; left:120px; top:110px; font-size:640px; line-height:640px; font-weight:800; color:var(--or); letter-spacing:-.06em; }
+#two .zero { position:absolute; left:500px; top:110px; font-size:640px; line-height:640px; font-weight:800; color:var(--or); letter-spacing:-.06em; opacity:0; }
+#two .lab { position:absolute; left:640px; top:300px; font-size:120px; line-height:130px; font-weight:800; letter-spacing:-.03em; opacity:0; }
+#lab2 { left:960px !important; }
+#two .lab small { display:block; font-size:40px; line-height:56px; color:var(--muted); font-weight:500; letter-spacing:0; }
+
+/* L CTA */
+#s13 .left { top:170px; width:900px; }
+#s13 .date { font-size:150px; line-height:160px; font-weight:800; letter-spacing:-.03em; margin-top:10px; white-space:nowrap; }
+#s13 .where { margin-top:22px; font-size:40px; font-weight:800; }
+#s13 .where span { color:var(--muted); font-weight:500; }
+#cta { left:120px; top:740px; width:640px; height:110px; border-radius:999px; background:var(--or); color:#fff; font-size:38px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:14px; box-shadow:0 24px 50px -20px rgba(255,106,26,.7); }
+#duo13 { left:1000px; top:150px; width:800px; display:flex; justify-content:center; gap:70px; }
+.av { text-align:center; }
+.av .im { width:220px; height:220px; border-radius:50%; overflow:hidden; border:6px solid #fff; box-shadow:0 24px 50px -24px rgba(120,70,20,.5); margin:0 auto; }
+.av .im img { width:100%; height:100%; object-fit:cover; object-position:50% 18%; }
+.av .n { margin-top:16px; font-size:34px; font-weight:800; }
+.av .r { margin-top:4px; font-size:24px; color:var(--muted); font-weight:500; }
+#info { left:1000px; top:540px; width:800px; padding:10px 34px; }
+.ir { height:82px; display:flex; align-items:center; gap:20px; font-size:31px; font-weight:800; }
+.ir + .ir { border-top:1px solid var(--line); }
+.ir em { font-style:normal; color:var(--or); width:36px; text-align:center; }
+/* ===== 글자 키움 (v4.1) ===== */
+#tag { font-size:28px; }
+#sub { top:928px; font-size:46px; line-height:62px; }
+.kick { height:60px; padding:0 28px; font-size:32px; }
+.chip { font-size:34px; padding:14px 22px; border-radius:18px; }
+.prof .nm { font-size:90px; } .prof .nm small { font-size:38px; }
+.prof .role { top:262px; font-size:38px; }
+.prof .chips { top:336px; gap:12px; }
+.prof .chip { font-size:32px; padding:12px 20px; }
+#award8 { left:1400px; width:420px; top:730px; }
+#award8 .chip { white-space:normal; font-size:30px; line-height:40px; display:inline-block; text-align:center; }
+.tline { font-size:40px; gap:20px; }
+.tline .ok { width:38px; height:38px; }
+.term .bar { font-size:26px; height:66px; }
+#t7 { top:470px; height:440px; }
+#t7 .t7l:nth-child(2) { top:96px !important; } #t7 .t7l:nth-child(3) { top:178px !important; } #t7 .t7l:nth-child(4) { top:260px !important; } #t7 .t7l:nth-child(5) { top:342px !important; }
+.note { width:640px; padding:22px 26px; }
+.note .ic { width:68px; height:68px; font-size:28px; }
+.note .tx { font-size:28px; } .note .tx b { font-size:36px; }
+#n1 { left:960px; top:640px; } #n2 { left:1180px; top:770px; }
+#win { height:500px; }
+#zoom .zt { font-size:44px; } #zoom .zt small { font-size:30px; }
+.zs { height:100px; font-size:42px; }
+.zs span { font-size:30px; }
+#kakao { top:720px; font-size:38px; }
+.ir { height:96px; font-size:40px; }
+.av .n { font-size:42px; } .av .r { font-size:30px; }
+.duo-card .n { font-size:58px; } .duo-card .r { font-size:34px; }
+#big2 .num span { font-size:48px; }
+#big2 .pill { font-size:46px; padding:20px 36px; }
+#chat .t, #edit .t { font-size:28px; }
+#chat .q { font-size:38px; } #chat .a { font-size:34px; }
+#hookq { font-size:54px; line-height:70px; }
+.lbl2 { font-size:28px; } #ph9 .rl { font-size:28px; } .tc { font-size:22px; }
+#two .lab small { font-size:54px; line-height:70px; }
+#ven-t .c { font-size:42px; }
+#ven-t .a { font-size:32px; }
+#cta { width:760px; height:120px; font-size:46px; }
+#s13 .where { font-size:50px; }
+#strike { font-size:84px; }
+
+/* v4.1 fixes */
+#sub { word-break:keep-all; }
+.duo-card { top:300px; }
+.duo-card .pf { width:330px; height:400px; }
+.duo-card .n { margin-top:16px; }
+#lab2 { left:1010px !important; }
+#kakao { font-size:34px; }
+
+/* NYC photo background */
+#photo { position:absolute; inset:-40px; overflow:hidden; }
+#photo img { width:100%; height:100%; object-fit:cover; object-position:60% 50%; filter:blur(5px) saturate(1.05); }
+#veil { position:absolute; inset:0; background:linear-gradient(90deg, rgba(251,246,238,.86) 0%, rgba(251,246,238,.70) 45%, rgba(251,246,238,.52) 100%), linear-gradient(0deg, rgba(251,246,238,.85) 0%, rgba(251,246,238,0) 22%); }
+#grain { opacity:.12; }
+
+/* plane effect (A) in instructor scene */
+#fxMap { left:0; top:0; width:1920px; height:1080px; }
+#fxRoute { fill:none; stroke:var(--or); stroke-width:5; stroke-dasharray:14 14; stroke-linecap:round; }
+.fxCity { font-size:40px; font-weight:800; }
+.fxCity small { display:block; font-size:26px; color:var(--muted); font-weight:500; }
+#fxSeoul { left:70px; top:640px; } #fxNY { left:1610px; top:640px; text-align:right; width:240px; }
+.fxDot { width:26px; height:26px; border-radius:50%; background:var(--or); box-shadow:0 0 0 10px rgba(255,106,26,.2); }
+#fxDS { left:137px; top:597px; } #fxDN { left:1757px; top:597px; }
+#fxPlane { left:0; top:0; width:100px; height:100px; margin:-50px 0 0 -50px; }
+#fxStamp { left:1490px; top:300px; width:380px; height:180px; border:7px solid var(--or-deep); border-radius:22px; color:var(--or-deep); text-align:center; padding-top:20px; transform:rotate(-12deg); background:rgba(251,246,238,.6); }
+#fxStamp b { display:block; font-size:56px; letter-spacing:.06em; }
+#fxStamp span { font-size:24px; font-weight:800; letter-spacing:.12em; }
+/* ===== 4:3 1440x1080 + 큰 글자 ===== */
+html, body, #main { width:1440px !important; }
+#tag { left:50px; top:38px; font-size:28px; }
+#sub { left:60px; width:1320px; top:912px; font-size:50px; line-height:66px; }
+#sub span { width:1320px; }
+.left { left:80px; width:640px; }
+.hl { font-size:92px; line-height:108px; }
+.kick { font-size:32px; height:60px; }
+/* A */
+#chat { left:760px; top:150px; width:620px; }
+#chat .q { font-size:40px; } #chat .a { font-size:36px; }
+#edit { left:760px; top:440px; width:620px; height:420px; }
+#edit .row { width:560px; }
+#hookq { font-size:58px; line-height:74px; }
+/* B duo + plane */
+.duo-card { width:520px; top:290px; }
+#dR { left:150px; } #dH { left:770px; }
+.duo-card .pf { width:330px; height:400px; }
+.duo-card .n { font-size:60px; } .duo-card .r { font-size:36px; }
+#fxSeoul { left:36px; top:640px; } #fxNY { left:1150px; top:640px; width:260px; white-space:nowrap; }
+#fxDS { left:97px; } #fxDN { left:1317px; }
+#fxStamp { left:1010px; top:280px; width:360px; }
+#s3 .top { width:1440px; }
+/* C */
+#big2 { left:720px; top:150px; width:680px; }
+#big2 .nums { gap:50px; }
+#big2 .num b { font-size:230px; line-height:220px; }
+#big2 .num span { font-size:52px; }
+#big2 .pill { font-size:48px; padding:20px 34px; }
+/* D */
+#s5 .center { width:1440px; }
+#strike { font-size:92px; } #notool2 { font-size:104px; line-height:118px; }
+/* E/G profiles */
+.prof .pf { left:80px !important; top:150px; width:370px; height:480px; }
+#s6 .nm, #s6 .role, #s6 .chips, #s8 .nm, #s8 .role, #s8 .chips { left:490px !important; }
+.prof .nm { font-size:92px; } .prof .role { font-size:36px; top:262px; }
+.prof .chip { font-size:36px; padding:12px 20px; }
+#poster8 { left:80px; top:150px; width:370px; height:480px; z-index:3; }
+#award8 { left:60px; top:648px; width:410px; text-align:center; }
+#award8 .chip { font-size:30px; line-height:40px; }
+/* F */
+#t7 { left:80px; top:460px; width:630px; height:440px; }
+.tline { font-size:38px; }
+#win { left:750px; top:110px; width:640px; height:460px; }
+#rep, #rep img { width:640px; }
+.note { width:580px; }
+#n1 { left:770px; top:610px; } #n2 { left:810px; top:750px; }
+.note .tx { font-size:28px; } .note .tx b { font-size:36px; }
+/* H */
+#ph9 { left:750px; top:80px; width:340px; height:720px; }
+#ph9 .scr { width:314px; height:694px; }
+#ph9 .isl { left:107px; }
+#cin1 { left:1120px; top:100px; width:270px; height:340px; }
+#cin2 { left:1120px; top:460px; width:270px; height:340px; }
+/* I */
+#zoom { left:750px; top:130px; width:640px; }
+#zoom .zt { font-size:42px; } #zoom .zt small { font-size:30px; }
+.zs { font-size:40px; } .zs span { font-size:30px; }
+#kakao { left:750px; top:720px; width:640px; font-size:32px; }
+/* J */
+#ven, #ven-shade { width:1440px; }
+#door { left:1050px; top:110px; width:320px; height:380px; }
+#ven-t { left:80px; width:900px; }
+#ven-t .b { font-size:118px; line-height:122px; }
+#ven-t .c { font-size:40px; }
+/* K */
+#two { width:1440px; }
+#two .digit { left:70px; font-size:620px; line-height:620px; }
+#two .zero { left:430px; font-size:620px; line-height:620px; }
+#two .lab { left:500px; width:900px; font-size:130px; line-height:140px; }
+#lab2 { left:860px !important; width:560px; }
+#two .lab small { font-size:48px; line-height:64px; white-space:normal; }
+/* L */
+#s13 .left { width:700px; }
+#s13 .date { font-size:132px; line-height:140px; }
+#s13 .where { font-size:46px; }
+#cta { left:80px; top:740px; width:640px; height:116px; font-size:42px; }
+#duo13 { left:750px; width:640px; gap:50px; }
+.av .im { width:210px; height:210px; } .av .n { font-size:44px; } .av .r { font-size:30px; }
+#info { left:750px; top:540px; width:640px; }
+.ir { font-size:36px; height:92px; }
+
+/* 4:3 fixes */
+#s1 .hl { font-size:80px; line-height:96px; }
+.duo-card { width:440px; }
+#dR { left:250px; } #dH { left:750px; }
+.duo-card .pf { width:290px; height:350px; }
+#fxStamp { left:1110px; top:220px; width:300px; height:150px; padding-top:14px; }
+#fxStamp b { font-size:46px; } #fxStamp span { font-size:20px; }
+#two #lab2 { left:880px; width:540px; }
+#two #lab2 small { font-size:44px; line-height:58px; }
+#cta { font-size:36px; }
+/* ===== 다크 시네마틱 (갤러리 장면 톤) ===== */
+:root { --ink:#FFFFFF; --muted:rgba(255,255,255,.72); --or:#FFB547; --or-deep:#FFB547; --or-soft:rgba(255,181,71,.16); --line:rgba(255,255,255,.14); --surface:rgba(18,14,10,.55); --amber:#FFB547; }
+html, body, #main { background:#0E0B08 !important; color:#fff; }
+#photo img { filter:grayscale(1) blur(1.5px) contrast(1.05); object-position:50% 55%; }
+#veil { background:linear-gradient(90deg, rgba(14,11,8,.86) 0%, rgba(14,11,8,.62) 50%, rgba(14,11,8,.42) 100%), linear-gradient(0deg, rgba(14,11,8,.82) 0%, rgba(14,11,8,0) 32%); }
+#grain { mix-blend-mode:overlay; opacity:.25; }
+#tag { color:rgba(255,255,255,.7); }
+#sub { color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.5); }
+.kick { background:rgba(255,181,71,.14); color:#FFB547; border:1px solid rgba(255,181,71,.35); }
+.card, .note, #info, #zoom, #kakao, #chat, #edit { background:rgba(22,18,14,.58) !important; border:1px solid rgba(255,255,255,.12) !important; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); box-shadow:0 30px 70px -30px rgba(0,0,0,.7) !important; color:#fff; }
+.chip { background:rgba(22,18,14,.62); border:1px solid rgba(255,255,255,.14); color:#fff; box-shadow:none; }
+.chip b { color:#FFB547; }
+#chat .t, #edit .t, .note .tx, #zoom .zt small, .zs span, .av .r, .duo-card .r, .prof .role { color:rgba(255,255,255,.7); }
+.prof .role, .duo-card .r { color:#FFB547; }
+#chat .q { background:#FFB547; color:#1A140E; }
+#chat .a { background:rgba(255,255,255,.1); color:#fff; }
+#edit .row { background:rgba(255,255,255,.08); }
+.note .tx b, .zs, .ir, #kakao { color:#fff; }
+.zs, .ir + .ir { border-color:rgba(255,255,255,.12) !important; }
+.ok { background:#FFB547; }
+.ok svg path { stroke:#1A140E; }
+#cta { background:#FFB547; color:#1A140E; box-shadow:0 20px 50px -18px rgba(255,181,71,.5); }
+#cta svg { stroke:#1A140E; }
+#two .digit, #two .zero, #big2 .num b { color:#FFB547; }
+#big2 .num span { color:#fff; }
+.pill { background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); color:#fff; }
+.pill.or { background:#FFB547; color:#1A140E; border:none; }
+#strike { color:rgba(255,255,255,.55); }
+#fxStamp { border-color:#FFB547; color:#FFB547; background:rgba(14,11,8,.45); }
+.fxCity small { color:rgba(255,255,255,.6); }
+.fxDot { box-shadow:0 0 0 10px rgba(255,181,71,.22); }
+#s13 .where span { color:rgba(255,255,255,.65); }
+#hookq { color:rgba(255,255,255,.7); }
+
+
+.bgl{position:absolute;inset:0;opacity:0;overflow:hidden}
+.bgl video,.bgl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#Lloft img{filter:grayscale(.4) blur(2px)}
+#Lcrowd img{filter:grayscale(1) blur(2px)}
+#Lscreens video{filter:saturate(.8) blur(1px)}
+
+/* 2일 12시간 가로 배치 */
+#big2 .nums { flex-direction:row; align-items:baseline; gap:90px; }
+#big2 .num { display:flex; align-items:baseline; gap:6px; }
+#big2 .num b { display:inline; font-size:210px; line-height:210px; }
+#big2 .num span { font-size:72px; color:#fff; }
+#sub span { line-height:64px; }
+
+#big2 { left:700px; width:720px; }
+#big2 .nums { gap:56px; }
+#big2 .num b { font-size:180px; line-height:180px; }
+#big2 .num span { font-size:64px; white-space:nowrap; }
+
+/* v9: 회색(스카이라인·갤러리 군중) 배경만 갤러리 장면 톤으로 */
+#photo { inset:-20px; }
+#photo img { filter:grayscale(1) contrast(1.06) !important; }
+#Lcrowd img { filter:grayscale(1) contrast(1.06) !important; }
+#veil { background:linear-gradient(90deg, rgba(20,14,8,.78) 0%, rgba(20,14,8,.35) 45%, rgba(20,14,8,0) 70%), linear-gradient(0deg, rgba(20,14,8,.62) 0%, rgba(20,14,8,0) 30%) !important; }
+#veilD { position:absolute; inset:0; opacity:0; background:linear-gradient(90deg, rgba(14,11,8,.86) 0%, rgba(14,11,8,.62) 50%, rgba(14,11,8,.42) 100%), linear-gradient(0deg, rgba(14,11,8,.82) 0%, rgba(14,11,8,0) 32%); }
+.hl, .nm, .prof .role, .duo-card .n, .duo-card .r, .av .n, .av .r, #two .lab, #s13 .date, #s13 .where, #strike, #notool2, #hookq, .fxCity, #big2 .num, #tag { text-shadow:0 2px 16px rgba(0,0,0,.6), 0 0 2px rgba(0,0,0,.35); }
+#sub { text-shadow:0 2px 14px rgba(0,0,0,.7); }
+
+#two .lab small { display:inline-block; margin-top:10px; background:rgba(14,11,8,.58); padding:6px 16px; border-radius:12px; backdrop-filter:blur(8px); }
+.av { background:rgba(14,11,8,.5); padding:14px 20px 16px; border-radius:26px; backdrop-filter:blur(8px); }
+
+/* v10: 갤러리 장면처럼 진한 흑백 대비 */
+#photo img { filter:grayscale(1) contrast(1.5) brightness(.9) !important; }
+#Lcrowd img { filter:grayscale(1) contrast(1.25) brightness(.95) !important; }
+#veil { background:linear-gradient(90deg, rgba(0,0,0,.70) 0%, rgba(0,0,0,.30) 45%, rgba(0,0,0,0) 70%), linear-gradient(0deg, rgba(0,0,0,.62) 0%, rgba(0,0,0,0) 30%) !important; }
+#grain { opacity:.04 !important; }
+.card, .note, #info, #zoom, #kakao, #chat, #edit { background:rgba(14,12,10,.82) !important; backdrop-filter:blur(6px) !important; -webkit-backdrop-filter:blur(6px) !important; }
+.chip { background:rgba(14,12,10,.8); }
+
+#Lscreens video { filter:none !important; }
+
+/* s4 재배치: 왼쪽 글, 오른쪽 캐릭터 영상 */
+#duoVid { left:690px; top:120px; width:740px; height:555px; -webkit-mask-image:radial-gradient(ellipse 52% 54% at 50% 50%, #000 78%, transparent 100%); mask-image:radial-gradient(ellipse 52% 54% at 50% 50%, #000 78%, transparent 100%); }
+#duoVid video { width:100%; height:100%; object-fit:cover; display:block; }
+#s4 .left { top:180px !important; }
+#big2 { left:80px !important; top:560px !important; width:620px !important; height:auto !important; align-items:flex-start !important; justify-content:flex-start !important; gap:26px !important; }
+#big2 .nums { gap:44px !important; }
+#big2 .num b { font-size:150px !important; line-height:150px !important; }
+#big2 .num span { font-size:54px !important; }
+#big2 .pill { font-size:38px !important; padding:16px 28px !important; }
+
+#duoVid { left:620px !important; top:90px !important; width:820px !important; height:615px !important; }
+
+#timer { right:50px; top:30px; display:flex; align-items:center; gap:8px; font-family:var(--ui); font-weight:800; font-size:28px; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,.6); z-index:40; font-variant-numeric:tabular-nums; }
+#timer .tSep, #timer .tTot { color:rgba(255,255,255,.6); }
+#tBar { width:150px; height:6px; margin-left:12px; border-radius:3px; background:rgba(255,255,255,.22); overflow:hidden; }
+#tFill { width:100%; height:100%; background:#FFB547; transform-origin:0 50%; transform:scaleX(0); }
+
+/* 2일·20년·2주 설명: 판 없이, 아래 줄로 띄워서 */
+#two .lab { left:560px !important; }
+#two #lab2 { left:930px !important; width:480px !important; }
+#two .lab small, #two #lab2 small { display:block !important; background:none !important; padding:0 !important; border-radius:0 !important; backdrop-filter:none !important; margin-top:22px !important; font-size:46px !important; line-height:62px !important; color:#fff !important; text-shadow:0 2px 18px rgba(0,0,0,.9), 0 0 4px rgba(0,0,0,.7) !important; }
+
+#twoShade { position:absolute; left:420px; top:120px; width:1100px; height:560px; background:radial-gradient(closest-side, rgba(0,0,0,.62), rgba(0,0,0,.35) 55%, rgba(0,0,0,0)); pointer-events:none; }
+
+#tNow, #timer .tSep, #timer .tTot { display:none !important; }
+#timer { top:40px; }
+#tBar { width:200px; margin-left:0; }
+
+/* 1페이지 어둡게 + 자막 아래 그라데이션 */
+#veilH { position:absolute; inset:0; background:linear-gradient(90deg, rgba(0,0,0,.45) 0%, rgba(0,0,0,.28) 55%, rgba(0,0,0,.18) 100%); opacity:0; }
+#subShade { position:absolute; left:0; right:0; bottom:0; height:380px; background:linear-gradient(0deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,.55) 40%, rgba(0,0,0,0) 100%); pointer-events:none; }
+</style>
+</head>
+<body>
+<div id="main" data-composition-id="main" data-start="0" data-duration="77" data-width="1440" data-height="1080">
+<div id="stage" style="position:absolute;inset:0">
+  <div id="bg"><div id="photo"><img src="assets/nyc_bw.jpg" alt="" /></div><div class="bgl" id="Lscreens"><video id="vbg1" src="assets/bg_screens.mp4" muted playsinline data-start="16.45" data-duration="7.8" data-track-index="20"></video></div>
+<div class="bgl" id="Lloft"><img src="assets/nyc_loft.jpg" alt="" /></div>
+<div class="bgl" id="Lsaran"><video id="vbg2" src="assets/bg_saran.mp4" muted playsinline data-start="40.45" data-duration="9.3" data-track-index="21"></video></div>
+<div class="bgl" id="Lclimax"><video id="vbg3" src="assets/bg_climax.mp4" muted playsinline data-start="49.75" data-duration="6.2" data-track-index="22"></video></div>
+<div class="bgl" id="Lcrowd"><img src="assets/venue3.jpg" alt="" /></div><div id="Lblack" style="position:absolute;inset:0;background:#0B0907;opacity:0"></div><div id="veil"></div><div id="veilH"></div><div id="subShade"></div><div id="veilD"></div><div id="grain"></div></div>
+  <div id="timer" class="abs"><span id="tNow">0:00</span><span class="tSep">/</span><span class="tTot">1:17</span><div id="tBar"><div id="tFill"></div></div></div><div id="tag" class="abs"><i></i>라이언 × 햄로그 · NEW YORK · <b style="color:#FFB547">2026.11.21–22</b></div>
+
+  <!-- A hook 0–9 -->
+  <div id="s1" class="scene">
+    <div class="left abs"><div class="hl"><span class="l">혹시 아직도</span><span class="l">AI를 <span class="o">채팅으로만</span></span><span class="l">쓰고 계신가요?</span></div><div id="hookq">편집은 아직도<br>하나하나 직접?</div></div>
+    <div id="chat" class="abs card"><div class="t">ChatGPT</div><div class="q">이 메일 요약해줘</div><div class="a">네, 요약해 드릴게요…</div></div>
+    <div id="edit" class="abs card"><div class="t">편집 타임라인 <b>● 3시간째</b></div>
+      <div class="row" style="top:70px"></div><div class="row" style="top:136px"></div><div class="row" style="top:202px"></div><div class="row" style="top:268px"></div><div class="row" style="top:334px"></div>
+      <div class="ph"></div></div>
+  </div>
+
+  <!-- B duo 9–16.2 -->
+  <div id="s3" class="scene">
+    <svg id="fxMap" class="abs" viewBox="0 0 1440 1080" style="width:1440px"><path id="fxRoute" d="M110,610 C430,170 1010,170 1330,610"/></svg>
+    <div id="fxDS" class="abs fxDot"></div><div id="fxDN" class="abs fxDot"></div>
+    <div id="fxSeoul" class="abs fxCity">SEOUL<small>한국에서</small></div>
+    <div id="fxNY" class="abs fxCity">NEW YORK<small>뉴욕으로</small></div>
+    <svg id="fxPlane" class="abs" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" fill="#FFFFFF" transform="rotate(90 12 12)"/></svg>
+    <div id="fxStamp" class="abs"><b>ARRIVED</b><span>NEW YORK · 11.21</span></div>
+    <div class="top abs"><span class="kick">뉴욕 한인분들을 위해</span><div class="hl"><span class="l">한국에서 <span class="o">찾아갑니다</span></span></div></div>
+    <div id="dH" class="duo-card"><div class="pf"><img src="assets/hamlog.jpg" alt="" /></div><div class="n">햄로그</div><div class="r">AI 영상 크리에이터</div></div>
+    <div id="dR" class="duo-card"><div class="pf"><img src="assets/ryan.jpg" alt="" /></div><div class="n">라이언</div><div class="r">개발자</div></div>
+  </div>
+
+  <!-- C 2 days 16.2–24 -->
+  <div id="s4" class="scene">
+    <div class="left abs" style="top:300px"><span class="kick">주말 집중 워크숍</span><div class="hl"><span class="l">이런 기회,</span><span class="l"><span class="o">흔치 않아요</span></span></div></div>
+    <div id="duoVid" class="abs"><video id="vduo" src="assets/duo_breakout.mp4" muted playsinline data-start="16.45" data-duration="7.8" data-track-index="23"></video></div><div id="big2" class="abs">
+      <div class="nums"><div class="num"><b>2</b><span>일</span></div><div class="num"><b>12</b><span>시간</span></div></div>
+      <div class="plus"><div class="pill">바이브 코딩</div><div class="x">+</div><div class="pill or">AI 영상</div></div>
+    </div>
+  </div>
+
+  <!-- D not a tool lecture 24–26.4 -->
+  <div id="s5" class="scene">
+    <div class="center abs"><div id="strike">툴 사용법 강의<i></i></div><div id="notool2">일하는 방식을 <span class="o">바꿉니다</span></div></div>
+  </div>
+
+  <!-- E Ryan 26.4–35.1 -->
+  <div id="s6" class="scene prof">
+    <div class="pf"><img src="assets/ryan.jpg" alt="" /></div>
+    <div class="nm">라이언</div>
+    <div class="role">AI 업무 자동화 전문가 · 레커넥트 대표</div>
+    <div class="chips">
+      <div class="chip"><b>KAIST</b> 컴퓨터과학 석사</div>
+      <div class="chip"><b>네이버</b> 빅데이터 엔지니어 · 스타트업 CTO</div>
+      <div class="chip">개발 <b>15년</b></div>
+      <div class="chip">기업 운영 자동화·<b>AI 전환</b> 회사 대표</div>
+      <div class="chip">실제 사업장 <b>자동화 시스템</b> 구축</div>
+      <div class="chip">기업·연구기관 <b>AI 자동화 강의</b></div>
+    </div>
+  </div>
+
+  <!-- F Ryan outcome 35.1–40.2 -->
+  <div id="s7" class="scene">
+    <div class="left abs" style="top:170px"><span class="kick">라이언과 배우면</span><div class="hl" style="font-size:76px;line-height:92px"><span class="l">반복 업무,</span><span class="l"><span class="o">말 한마디면</span> 끝</span></div></div>
+    <div id="t7" class="abs term">
+      <div class="bar"><i></i><i></i><i></i><img src="assets/claude-color.svg" alt="" />Claude Code</div>
+      <div class="tline t7l" style="top:86px"><span class="p">&gt;</span>메일 정리해줘<div class="ok"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F1A14" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div></div>
+      <div class="tline t7l" style="top:152px"><span class="p">&gt;</span>경쟁사 27곳 주간 리포트<div class="ok"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F1A14" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div></div>
+      <div class="tline t7l" style="top:218px"><span class="p">&gt;</span>매일 아침 7시 브리핑<div class="ok"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F1A14" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div></div>
+      <div class="tline t7l" style="top:284px"><span class="p">&gt;</span>흩어진 파일 정리<div class="ok"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F1A14" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div></div>
+    </div>
+    <div id="win" class="abs"><div class="bar"><i></i><i></i><i></i><div class="url">실제 결과물 · Instagram 주간 리포트</div></div><div id="rep"><img src="assets/ig_report.jpg" alt="" /></div></div>
+    <div id="n1" class="note"><div class="ic" style="background:#EA4335">M</div><div class="tx">Gmail<b>답장할 메일 정리 완료</b></div></div>
+    <div id="n2" class="note"><div class="ic" style="background:var(--or)">7:00</div><div class="tx">아침 브리핑<b>오늘 일정 · 할 일 도착</b></div></div>
+  </div>
+
+  <!-- G Hamlog 40.2–49.5 -->
+  <div id="s8" class="scene prof">
+    <div class="pf"><img src="assets/hamlog.jpg" alt="" /></div>
+    <div class="nm">햄로그</div>
+    <div class="role">AI 영상 크리에이터</div>
+    <div class="chips">
+      <div class="chip">LG전자 · HSAD <b>16년</b></div>
+      <div class="chip">퇴근 후 밤마다 <b>AI 영상 독학</b></div>
+      <div class="chip">컬럼비아대·ETH 취리히 <b>공동연구</b> 영상</div>
+      <div class="chip">LG유니참 등 <b>브랜드 광고</b></div>
+      <div class="chip">한예종 마스터클래스 · <b>KBS</b> 출연</div>
+      <div class="chip">스레드 <b>2.7만</b> · 커뮤니티 <b>2,900명</b></div>
+    </div>
+    <div id="poster8" class="abs media"><img src="assets/saran_poster.jpg" alt="" /></div>
+    <div id="award8" class="abs"><span class="chip">〈사란〉 <b>NYIFA 4관왕</b><br>AI IFF 2관왕</span></div>
+  </div>
+
+  <!-- H Hamlog outcome 49.5–55.7 -->
+  <div id="s9" class="scene">
+    <div class="left abs" style="top:220px"><span class="kick">햄로그와 배우면</span><div class="hl" style="font-size:76px;line-height:92px"><span class="l">AI 모델 릴스,</span><span class="l"><span class="o">시네마틱 영상</span>까지</span><span class="l">직접</span></div></div>
+    <div id="ph9" class="abs"><div class="scr"><div class="isl"></div><video id="v-char" src="assets/char3d.mp4" muted playsinline data-start="49.6" data-duration="6.4" data-track-index="1"></video><div class="rl">AI 모델 릴스</div></div></div>
+    <div id="cin1" class="abs media"><video id="v-sa" src="assets/saran1.mp4" muted playsinline data-start="50.0" data-duration="6.0" data-track-index="2"></video><div class="lbl2">시네마틱</div><div class="tc">SARAN</div></div>
+    <div id="cin2" class="abs media"><video id="v-dr" src="assets/drama1.mp4" muted playsinline data-start="50.3" data-duration="5.7" data-track-index="3"></video><div class="lbl2">실사 숏드라마</div></div>
+  </div>
+
+  <!-- I install 55.7–61.5 -->
+  <div id="s10" class="scene">
+    <div class="left abs" style="top:300px"><span class="kick">처음이어도 괜찮아요</span><div class="hl"><span class="l">설치부터</span><span class="l"><span class="o">같이</span> 해요</span></div></div>
+    <div id="zoom" class="abs card">
+      <div class="zh"><div class="zi"><svg width="36" height="36" viewBox="0 0 24 24"><path d="M3 7h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H3z" fill="#fff"/><path d="M17 10l4-3v10l-4-3z" fill="#fff"/></svg></div><div class="zt">사전 줌 세미나<small>11/14(토) 저녁 8시 · 뉴욕 시간</small></div></div>
+      <div class="zs"><div class="ok"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>Claude Code 설치<span>함께</span></div>
+      <div class="zs"><div class="ok"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>계정 · 도구 연결<span>함께</span></div>
+      <div class="zs"><div class="ok"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>첫 명령 실행해 보기<span>함께</span></div>
+    </div>
+    <div id="kakao" class="abs card"><i>TALK</i>수업 후에도 카톡방에서 질문하세요</div>
+  </div>
+
+  <!-- J venue 61.5–65.1 -->
+  <div id="s11" class="scene">
+    <div id="ven" class="abs"><img id="vi1" src="assets/venue2.jpg" alt="" /><img id="vi2" src="assets/venue3.jpg" alt="" style="opacity:0" /></div>
+    <div id="ven-shade" class="abs"></div>
+    <div id="door" class="abs"><img src="assets/venue1.jpg" alt="" /></div>
+    <div id="ven-t" class="abs"><div class="a">VENUE · CHELSEA, NEW YORK</div><div class="b">Gallery<br>AP SPACE</div><div class="c">555 W 25th St</div><div class="c" style="margin-top:8px;color:#FFB547;font-weight:800">지난 워크숍에 이은 두 번째 무대</div></div>
+  </div>
+
+  <!-- K the 2 : 65.1–71.9 -->
+  <div id="s12" class="scene">
+    <div id="two" class="abs"><div id="twoShade"></div>
+      <div class="digit">2</div>
+      <div class="lab" id="lab1">일<small>단 이틀의 투자로</small></div>
+      <div class="zero" id="zero">0</div><div class="lab" id="lab2">년<small>앞으로의 20년을<br>바꿔 보세요</small></div>
+      <div class="lab" id="lab3">주 뒤<small>미래를 바꾸고 싶은 분들, 뉴욕에서 만나요</small></div>
+    </div>
+  </div>
+
+  <!-- L CTA 71.9–77 -->
+  <div id="s13" class="scene">
+    <div class="left abs"><span class="kick">11월 21일(토) · 22일(일)</span><div class="date">11.21–22</div><div class="where">뉴욕 첼시 <span>· Gallery AP SPACE</span></div></div>
+    <div id="cta" class="abs">자세한 내용은 댓글 링크 <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg> Luma</div>
+    <div id="duo13" class="abs">
+      <div class="av"><div class="im"><img src="assets/ryan.jpg" alt="" /></div><div class="n">라이언</div><div class="r">AI 업무 자동화</div></div>
+      <div class="av"><div class="im"><img src="assets/hamlog.jpg" alt="" /></div><div class="n">햄로그</div><div class="r">AI 영상 제작</div></div>
+    </div>
+    <div id="info" class="abs card">
+      <div class="ir"><em>◷</em>토·일 이틀 · 총 12시간 실습</div>
+      <div class="ir"><em>✓</em>사전 설치 세미나 포함</div>
+      <div class="ir"><em>✦</em>한국어 진행 · 수업 후 카톡방</div>
+    </div>
+  </div>
+
+  <div id="sub" class="abs">
+    <span id="k1">혹시 아직도 AI를 채팅으로만 쓰고 계신가요?</span>
+    <span id="k2">AI 영상은 한 번도 안 만들어 봤거나,<br>편집을 하나하나 직접 하고 계신 분</span>
+    <span id="k3">그런 뉴욕 한인분들을 위해, 한국에서 개발자 라이언과<br>AI 영상 크리에이터 햄로그가 찾아갑니다</span>
+    <span id="k4a">단 이틀, 주말 동안 총 12시간</span>
+    <span id="k4b">바이브 코딩과 AI 영상을 한 번에 배울 기회는<br>흔치 않아요</span>
+    <span id="k5">단순히 툴을 알려주는 강의가 아닙니다</span>
+    <span id="k6a">라이언은 네이버 빅데이터 엔지니어 출신,<br>15년 차 개발자예요</span>
+    <span id="k6b">AI에게 일을 맡기는 법, 누구보다 잘 압니다</span>
+    <span id="k7">매주 붙잡고 있던 반복 업무,<br>이제 말 한마디면 AI가 대신 끝내요</span>
+    <span id="k8a">저는 회사 다니며 밤마다 AI 영상을 독학했어요</span>
+    <span id="k8b">그렇게 만든 영화가 뉴욕에서 4관왕을 받았죠</span>
+    <span id="k8c">그 과정을 전부 보여드릴게요</span>
+    <span id="k9">내 상품을 소개하는 AI 모델 릴스,<br>실사 같은 시네마틱 영상까지 직접 만들게 돼요</span>
+    <span id="k10">처음이어도 괜찮아요.<br>사전 줌 세미나에서 Claude Code 설치부터 같이 해요</span>
+    <span id="k11" style="color:#fff">장소는 뉴욕 첼시, Gallery AP SPACE</span>
+    <span id="k12a">단 이틀의 투자로, 앞으로의 20년을 바꿔 보세요</span>
+    <span id="k12b">미래를 바꾸고 싶은 분들, 2주 뒤에 만나요</span>
+    <span id="k13">자세한 내용은 댓글의 Luma 링크를 참고해 주세요!</span>
+  </div>
+</div>
+</div>
+
+<script>
+(document.fonts ? Promise.all([document.fonts.load('800 48px "A2Z"'), document.fonts.load('500 48px "A2Z"')]).catch(function(){}) : Promise.resolve()).then(function(){
+const DUR = 77;
+const tl = gsap.timeline({ paused: true });
+window.__timelines = window.__timelines || {};
+window.__timelines["main"] = tl;
+tl.set({}, {}, DUR);
+const show = (id, a, b) => { tl.fromTo(id, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: 'none' }, a - 0.12); if (b) tl.to(id, { opacity: 0, duration: 0.12, ease: 'none' }, b - 0.12); };
+const lines = (sel, t) => tl.fromTo(sel, { opacity: 0, y: 30, filter: 'blur(12px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.7, ease: 'expo.out', stagger: 0.13 }, t);
+const pop = (sel, t, from) => tl.fromTo(sel, Object.assign({ opacity: 0, y: 60, scale: 0.97 }, from || {}), { opacity: 1, y: 0, x: 0, scale: 1, rotation: 0, duration: 0.85, ease: 'expo.out' }, t);
+const stag = (sel, t, each, from) => tl.fromTo(sel, Object.assign({ opacity: 0, x: -24 }, from || {}), { opacity: 1, x: 0, y: 0, duration: 0.5, ease: 'expo.out', stagger: each }, t);
+const checks = (sel, t, each) => tl.fromTo(sel, { scale: 0 }, { scale: 1, duration: 0.35, ease: 'back.out(2.6)', stagger: each }, t);
+const fade = (sel, t) => tl.fromTo(sel, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.45, ease: 'expo.out' }, t);
+
+// background
+tl.fromTo("#veilH",{opacity:1},{opacity:1,duration:8.76,ease:"none",immediateRender:true},0); tl.to("#veilH",{opacity:0,duration:0.12},8.76);
+(()=>{ const o={t:0}; const el=document.getElementById("tNow"); const fmt=s=>{s=Math.min(77,Math.floor(s)); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");};
+  tl.fromTo(o,{t:0},{t:77,duration:77,ease:"none",onUpdate:()=>{el.textContent=fmt(o.t);},immediateRender:true},0);
+  tl.fromTo("#tFill",{scaleX:0},{scaleX:1,duration:77,ease:"none"},0); })();
+tl.fromTo("#Lblack",{opacity:0},{opacity:1,duration:0.12},8.88); tl.to("#Lblack",{opacity:0,duration:0.12},26.53);
+tl.to("#veilD",{opacity:1,duration:0.2},26.4); tl.to("#veilD",{opacity:0,duration:0.3},61.75);
+const bgl=(id,a,b)=>{tl.fromTo(id,{opacity:0},{opacity:1,duration:0.2,ease:'none'},a-0.2); if(b) tl.to(id,{opacity:0,duration:0.2,ease:'none'},b);};
+bgl('#Lloft',26.3,40.45); bgl('#Lsaran',40.45,49.75); bgl('#Lclimax',49.75,55.95);
+tl.to('#Lloft',{opacity:1,duration:0.2},55.75); tl.to('#Lloft',{opacity:0,duration:0.2},61.75);
+bgl('#Lcrowd',72.15);
+tl.fromTo('#Lsaran video',{scale:1.0},{scale:1.08,duration:9.3,ease:'none'},40.45);
+tl.fromTo('#photo', { scale: 1.0, x: 0 }, { scale: 1.12, x: -60, duration: DUR, ease: 'none' }, 0);
+//tl.fromTo('#b1', { x: 0, y: 0 }, { x: 300, y: 200, duration: DUR, ease: 'none' }, 0);
+//tl.fromTo('#b2', { x: 0, y: 0 }, { x: -360, y: -240, duration: DUR, ease: 'none' }, 0);
+//tl.fromTo('#b3', { x: 0, y: 0 }, { x: -220, y: 280, duration: DUR, ease: 'none' }, 0);
+//tl.fromTo('#bigword', { x: 0 }, { x: -3200, duration: DUR, ease: 'none' }, 0);
+
+// subtitles
+[['#k1',0.0,3.35],['#k2',3.9,8.8],['#k3',9.3,16.15],['#k4a',16.61,19.5],['#k4b',19.99,23.8],['#k5',24.41,26.6],['#k6a',26.71,31.45],['#k6b',31.91,34.95],['#k7',35.49,40.15],['#k8a',40.57,43.85],['#k8b',44.39,47.25],['#k8c',47.69,49.45],['#k9',50.01,55.85],['#k10',55.9,61.35],['#k11',61.91,65.05],['#k12a',65.53,68.7],['#k12b',69.29,71.85],['#k13',72.29,76.75]]
+  .forEach(([id,a,b]) => { tl.fromTo(id, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.22, ease: 'power2.out' }, a); tl.to(id, { opacity: 0, duration: 0.2 }, b); });
+tl.fromTo('#tag', { opacity: 0 }, { opacity: 1, duration: 0.5 }, 0.1);
+tl.to('#tag', { opacity: 0, duration: 0.3 }, 61.45); tl.to('#tag', { opacity: 1, duration: 0.3 }, 72.15);
+
+// A 0–9 hook
+show('#s1', 0, 9.0); lines('#s1 .hl .l', 0.05);
+pop('#chat', 0.4, { x: 60, y: 0 });
+tl.fromTo('#chat .q', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4 }, 0.9);
+tl.fromTo('#chat .a', { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4 }, 1.6);
+tl.to('#chat', { opacity: 0.45, duration: 0.5 }, 3.6);
+const colors = ['#FFD8B5', '#FFE9DA', '#F9C9A5', '#EFE4D6', '#FFC58A'];
+document.querySelectorAll('#edit .row').forEach((row, r) => { let x = 0; for (let k = 0; k < 8; k++) { const w = 50 + ((r * 37 + k * 53) % 80); const c = document.createElement('div'); c.className = 'clip'; c.style.left = x + 'px'; c.style.width = w + 'px'; c.style.background = colors[(r + k) % colors.length]; row.appendChild(c); x += w + 6 + ((r + k) % 3) * 5; } });
+pop('#edit', 3.9, { x: 60, y: 0 });
+tl.fromTo('#edit .clip', { opacity: 0, scaleX: 0.2 }, { opacity: 1, scaleX: 1, duration: 0.3, ease: 'expo.out', stagger: 0.015, transformOrigin: '0 50%' }, 4.1);
+tl.fromTo('#edit .ph', { x: 0 }, { x: 460, duration: 4.6, ease: 'none' }, 4.2);
+tl.fromTo('#hookq', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'expo.out' }, 4.6);
+
+// B 9–16.10 duo
+show('#s3', 9.0, 16.45); fade('#s3 .kick', 8.75); lines('#s3 .hl .l', 8.85);
+tl.fromTo(['#fxDS', '#fxSeoul'], { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(2)' }, 8.95);
+(() => { const path = document.getElementById('fxRoute'); const L = path.getTotalLength(); const o = { t: 0 };
+  tl.fromTo(path, { strokeDasharray: `0 ${L}` }, { strokeDasharray: `${L} 0`, duration: 2.0, ease: 'power1.inOut' }, 9.6);
+  tl.set(path, { strokeDasharray: '14 14' }, 11.65);
+  const place = () => { const p = path.getPointAtLength(o.t * L); const p2 = path.getPointAtLength(Math.min(L, o.t * L + 2)); gsap.set('#fxPlane', { x: p.x, y: p.y, rotation: Math.atan2(p2.y - p.y, p2.x - p.x) * 180 / Math.PI }); };
+  tl.fromTo('#fxPlane', { opacity: 0 }, { opacity: 1, duration: 0.2 }, 9.6);
+  tl.fromTo(o, { t: 0 }, { t: 1, duration: 2.0, ease: 'power1.inOut', onUpdate: place, immediateRender: true }, 9.6);
+  tl.to('#fxPlane', { opacity: 0, duration: 0.3 }, 11.7);
+})();
+tl.fromTo(['#fxDN', '#fxNY'], { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.5, ease: 'back.out(2)' }, 11.4);
+tl.fromTo('#fxStamp', { opacity: 0, scale: 2.4, rotation: -30 }, { opacity: 1, scale: 1, rotation: -12, duration: 0.32, ease: 'power4.in' }, 11.55);
+tl.to('#stage', { x: 8, duration: 0.05, yoyo: true, repeat: 5, ease: 'none' }, 11.87);
+tl.fromTo('#dR', { opacity: 0, scale: 0.15 }, { opacity: 1, scale: 1, duration: 0.65, ease: 'back.out(2.4)' }, 11.9);
+tl.fromTo('#dH', { opacity: 0, scale: 0.15 }, { opacity: 1, scale: 1, duration: 0.65, ease: 'back.out(2.4)' }, 14.2);
+tl.to(['#fxRoute', '#fxDS', '#fxDN', '#fxSeoul', '#fxNY'], { opacity: 0.35, duration: 0.5 }, 12.2);
+
+// C 16.10–23.90
+show('#s4', 16.45, 24.25); fade('#s4 .kick', 16.20); lines('#s4 .hl .l', 19.95);
+tl.fromTo('#big2 .num', { opacity: 0, y: 80, scale: 1.4 }, { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'back.out(2.2)', stagger: 0.9 }, 16.30);
+tl.fromTo('#big2 .plus > *', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out', stagger: 0.25 }, 20.15);
+
+// D 23.90–26.30
+show('#s5', 24.25, 26.65);
+tl.fromTo('#strike', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'expo.out' }, 23.95);
+tl.fromTo('#strike i', { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: 'power3.inOut' }, 25.15);
+tl.fromTo('#notool2', { opacity: 0, y: 30, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.6, ease: 'expo.out' }, 25.55);
+
+// E 26.30–35.00 Ryan
+show('#s6', 26.65, 35.35);
+pop('#s6 .pf', 26.40, { x: -60, y: 0 });
+tl.fromTo(['#s6 .nm', '#s6 .role'], { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out', stagger: 0.15 }, 26.70);
+stag('#s6 .chip', 27.85, 0.55, { y: 16, x: 0 });
+tl.fromTo('#s6 .pf img', { scale: 1.08 }, { scale: 1.0, duration: 8, ease: 'none' }, 26.40);
+
+// F 35.00–40.10 outcome
+show('#s7', 35.35, 40.45); fade('#s7 .kick', 35.05); lines('#s7 .hl .l', 35.10);
+pop('#t7', 35.30, { y: 40 });
+stag('#t7 .t7l', 35.95, 0.35);
+checks('#t7 .t7l .ok', 36.35, 0.35);
+pop('#win', 35.40, { x: 80, y: 0 });
+tl.fromTo('#rep', { y: 0 }, { y: -1500, duration: 4.4, ease: 'power1.inOut' }, 35.95);
+pop('#n1', 37.25, { x: 60, y: 0 });
+pop('#n2', 37.85, { x: 60, y: 0 });
+
+// G 40.10–49.40 Hamlog
+show('#s8', 40.45, 49.75);
+pop('#s8 .pf', 40.20, { x: -60, y: 0 });
+tl.fromTo(['#s8 .nm', '#s8 .role'], { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'expo.out', stagger: 0.15 }, 40.50);
+stag('#s8 .chip', 41.55, 0.5, { y: 16, x: 0 });
+// card flip: photo turns away, poster turns in (no overlap)
+tl.to('#s8 .pf', { rotationY: 90, duration: 0.22, ease: 'power2.in', transformPerspective: 1200 }, 44.2);
+tl.set('#s8 .pf', { opacity: 0 }, 44.42);
+tl.fromTo('#poster8', { opacity: 0, rotationY: -90 }, { opacity: 1, rotationY: 0, duration: 0.4, ease: 'power3.out', transformPerspective: 1200, immediateRender: true }, 44.42);
+tl.fromTo('#award8 .chip', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 45.0);
+tl.to('#poster8 img', { scale: 1.06, duration: 5, ease: 'none' }, 44.35);
+
+// H 49.40–55.60
+show('#s9', 49.75, 55.95); fade('#s9 .kick', 49.45); lines('#s9 .hl .l', 49.50);
+pop('#ph9', 49.60, { y: 100 });
+pop('#cin1', 50.45, { x: 80, y: 0 });
+pop('#cin2', 51.15, { x: 80, y: 0 });
+
+// I 55.60–61.40
+show('#s10', 55.95, 61.75); fade('#s10 .kick', 56); lines('#s10 .hl .l', 55.70);
+pop('#zoom', 55.90, { x: 60, y: 0 });
+stag('#zoom .zs', 57.85, 0.5);
+checks('#zoom .zs .ok', 58.05, 0.5);
+pop('#kakao', 59.65, { y: 40 });
+
+// J 61.40–65.00
+show('#s11', 61.75, 65.35);
+tl.fromTo('#vi1', { scale: 1.1 }, { scale: 1.0, duration: 2.2, ease: 'power1.out' }, 61.40);
+tl.fromTo('#vi2', { opacity: 0, scale: 1.06 }, { opacity: 1, scale: 1.0, duration: 0.6, ease: 'power2.out' }, 63.35);
+pop('#door', 62.25, { y: 40, rotation: 4 });
+tl.fromTo('#ven-t > div', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.7, ease: 'expo.out', stagger: 0.15 }, 61.60);
+
+// K 65.00–71.80 : 2일 → 20년 → 2주
+show('#s12', 65.35, 72.15);
+tl.fromTo('#two .digit', { opacity: 0, scale: 1.6, y: -60 }, { opacity: 1, scale: 1, y: 0, duration: 0.45, ease: 'back.out(2)' }, 65.05);
+tl.fromTo('#lab1', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: 'expo.out' }, 65.30);
+tl.to('#lab1', { opacity: 0, x: 30, duration: 0.25 }, 67);
+// 2 -> 20 count-up
+{ const dg = document.querySelector('#two .digit'), zr = document.querySelector('#zero'); const cnt = { n: 2 };
+  const draw = () => { const n = Math.round(cnt.n); if (n < 10) { dg.textContent = String(n); zr.style.opacity = 0; } else { dg.textContent = String(Math.floor(n / 10)); zr.textContent = String(n % 10); zr.style.opacity = 1; } };
+  tl.fromTo(cnt, { n: 2 }, { n: 20, duration: 0.75, ease: 'power1.in', onUpdate: draw, immediateRender: false }, 66.95); }
+tl.fromTo(['#two .digit', '#zero'], { scale: 1 }, { scale: 1.08, duration: 0.1, yoyo: true, repeat: 1, ease: 'power2.out', immediateRender: false }, 67.7);
+tl.fromTo('#lab2', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: 'expo.out' }, 67.6);
+tl.to('#lab2', { opacity: 0, duration: 0.25 }, 69);
+// the 0 slides away softly
+tl.fromTo('#zero', { x: 0, filter: 'blur(0px)' }, { opacity: 0, x: 60, filter: 'blur(14px)', duration: 0.7, ease: 'power2.inOut', immediateRender: false }, 68.85);
+tl.to('#two .digit', { scale: 0.92, duration: 0.12, yoyo: true, repeat: 1, ease: 'power2.out' }, 69.2);
+tl.fromTo('#lab3', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.4, ease: 'expo.out' }, 69.3);
+
+// L 71.80–77 CTA
+show('#s13', 72.15);
+fade('#s13 .kick', 71.90);
+tl.fromTo(['#s13 .date', '#s13 .where'], { opacity: 0, y: 30, filter: 'blur(12px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.7, ease: 'expo.out', stagger: 0.2 }, 72.00);
+tl.fromTo('#duo13 .av', { opacity: 0, y: 40, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: 'back.out(1.8)', stagger: 0.2 }, 72.65);
+pop('#info', 73.25, { y: 40 });
+stag('#info .ir', 73.45, 0.25);
+tl.fromTo('#cta', { opacity: 0, y: 30, scale: 0.9 }, { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: 'back.out(2)' }, 72.85);
+tl.to('#cta', { scale: 1.04, duration: 0.5, yoyo: true, repeat: 7, ease: 'sine.inOut' }, 73.65);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "hamlog-skills",
+  "owner": { "name": "hamlog" },
+  "metadata": { "description": "햄로그가 실제 작업에 쓰는 Claude Code 스킬 모음" },
+  "plugins": [
+    {
+      "name": "cc-promo-video",
+      "source": "./plugins/cc-promo-video",
+      "description": "클로드 코드로 강의·워크숍·행사 홍보 영상(4:3)을 대본부터 렌더·음악 믹스까지 만드는 스킬",
+      "version": "1.0.0",
+      "category": "video"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "narration": {
+    "engine": "elevenlabs",
+    "voice_id": "여기에_내_목소리_ID",
+    "model_id": "eleven_v4",
+    "style": "해요체"
+  }
+}
